@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "1bc9a1f8-f830-4b1c-9746-4d64ea360ba6": {
+      "ProjectGuid": "1bc9a1f8-f830-4b1c-9746-4d64ea360ba6",
+      "DisplayName": "Pomelo_EntityFrameworkCore_MySql_CodeFirst",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "기타 파일",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 1
+}

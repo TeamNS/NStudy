@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "efe2a49a-2101-4ec7-b778-f3d759c3a437": {
+      "ProjectGuid": "efe2a49a-2101-4ec7-b778-f3d759c3a437",
+      "DisplayName": "MySql_EntityFrameworkCore_CodeFirst",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "기타 파일",
+      "ColorIndex": -1
+    },
+    "593ce8c0-8657-4c03-b17e-62cc92f37a74": {
+      "ProjectGuid": "593ce8c0-8657-4c03-b17e-62cc92f37a74",
+      "DisplayName": "MySql_EntityFrameworkCore_CodeFirst",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}
