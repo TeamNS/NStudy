@@ -1,0 +1,14 @@
+[테스트 환경]
+- VS : 2022
+- MySql : 8.0.22
+
+[테스트 항목]
+1. MySql.EntityFrameworkCore 6.0.0
+ ㆍDB 연결	: 특이사항없음
+ ㆍTable 생성	: 특이사항없음
+
+2. Pomelo.EntityFrameworkCore.MySql 6.0.1
+ ㆍDB 연결	: 특이사항없음
+ ㆍTable 생성	: 특이사항없음
+
+* PC환경에 따라서 오류가 발생하고 안하고의 문제는 있었던 것 같아서 다시 확인해볼 예정

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySql_EntityFrameworkCore_CodeFirst", "MySql_EntityFrameworkCore_CodeFirst\MySql_EntityFrameworkCore_CodeFirst.csproj", "{593CE8C0-8657-4C03-B17E-62CC92F37A74}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{593CE8C0-8657-4C03-B17E-62CC92F37A74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{593CE8C0-8657-4C03-B17E-62CC92F37A74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{593CE8C0-8657-4C03-B17E-62CC92F37A74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{593CE8C0-8657-4C03-B17E-62CC92F37A74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8433A704-2AC6-42E5-9845-9061BDC06C79}
+	EndGlobalSection
+EndGlobal
