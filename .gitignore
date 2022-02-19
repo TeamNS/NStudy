@@ -7,4 +7,5 @@
 *.obj
 *pdb
 *.cache
-*bin/
+bin/
+obj/
