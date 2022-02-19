@@ -1,0 +1,10 @@
+*.vs
+*x64
+*.vscode
+*.exe
+*.suo
+*.db
+*.obj
+*pdb
+*.cache
+*bin/

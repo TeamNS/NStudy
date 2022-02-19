@@ -1,0 +1,27 @@
+﻿@model DotNetCoreService.Models.User
+<h2>회원가입</h2>
+
+<form class="form-horizontal" method="post" asp-controller="Account" asp-action="Register">
+    <div class="form-group">
+        <label>로그인 ID</label>
+        <input type="text" class="form-control" asp-for="LoginID" placeholder="ID 입력" />
+        <span class="text-danger" asp-validation-for="LoginID"></span>
+    </div>
+
+    <div class="form-group">
+        <label>비밀번호</label>
+        <input type="text" class="form-control" asp-for="LoginPassword" placeholder="비밀번호 입력" />
+        <span class="text-danger" asp-validation-for="LoginPassword"></span>
+    </div>
+
+    <div class="form-group">
+        <label>이름</label>
+        <input type="text" class="form-control" asp-for="UserName" placeholder="이름 입력" />
+        <span class="text-danger" asp-validation-for="UserName"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">회원가입</button>
+        <a class="btn btn-warning" href="#">취소</a>
+    </div>
+</form>
