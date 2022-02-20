@@ -52,27 +52,45 @@ namespace DotNetCoreService
             return UserList;
         }
 
-        public void InsertUserInfo(User user)
+        public Int32 RegistUserInfo(User user)
         {
-            string SQL = "INSERT INTO UserTable (LoginID, LoginPassword, UserName) VALUES ('" + user.LoginID + ", '" + user.LoginPassword + "', '" + user.UserName + "') ";
-
+            Int32 retVal = 0;
             using (MySqlConnection con = GetConnection())
             {
                 try
                 {
                     con.Open();
-                    var cmd = new MySqlCommand(SQL, con);
+                    var cmd = new MySqlCommand();
+                    cmd.Connection = con;
 
-                    if(cmd.ExecuteNonQuery() == 1)
+                    cmd.CommandText = "spUserRegistration";
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("P_LoginID", user.LoginID);
+                    cmd.Parameters["P_LoginID"].Direction = System.Data.ParameterDirection.Input;
+
+                    cmd.Parameters.AddWithValue("P_LoginPassword", user.LoginPassword);
+                    cmd.Parameters["P_LoginPassword"].Direction = System.Data.ParameterDirection.Input;
+
+                    cmd.Parameters.AddWithValue("P_UserName", user.UserName);
+                    cmd.Parameters["P_UserName"].Direction = System.Data.ParameterDirection.Input;
+
+                    cmd.Parameters.AddWithValue("RetVal", retVal);
+                    cmd.Parameters["RetVal"].Direction = System.Data.ParameterDirection.Output;
+
+                    if (cmd.ExecuteNonQuery() == 1)
                     {
-                        Console.WriteLine("Insert Suc");
+                        Console.WriteLine("Proc Suc");
                     }
                     else
                     {
-                        Console.WriteLine("Insert Fail");
+                        Console.WriteLine("Proc Fail");
+                        Console.WriteLine("retVal: " + cmd.Parameters["RetVal"].Value);
+                        retVal = Convert.ToInt32(cmd.Parameters["RetVal"].Value);
                     }
+
                 }
-                catch(Exception e)
+                catch (MySql.Data.MySqlClient.MySqlException e)
                 {
                     Console.WriteLine("DB Connection Fail");
                     Console.WriteLine(e.ToString());
@@ -80,6 +98,7 @@ namespace DotNetCoreService
                 con.Close();
             }
 
+            return retVal;
         }
     }
 }

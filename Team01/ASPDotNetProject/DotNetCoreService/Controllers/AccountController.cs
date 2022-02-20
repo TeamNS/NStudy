@@ -38,14 +38,29 @@ namespace DotNetCoreService.Controllers
         [HttpPost]
         public IActionResult Register(User model)
         {
-            if(ModelState.IsValid)
+            //if(ModelState.IsValid)
+            //{
+            //    // Valid Check 
+            //    //using (var db = new Asp())
+            //    //{
+
+            //    //}
+
+            //    return RedirectToAction("Index", "Home");
+            //}
+
+            //return View(model);
+
+
+            if (ModelState.IsValid)
             {
-                // Valid Check 
-                //using (var db = new Asp())
-                //{
+                var context = HttpContext.RequestServices.GetService(typeof(DBConnection)) as DBConnection;
+                Int32 ret = context.RegistUserInfo(model);
 
-                //}
-
+                if(ret != 0)
+                {
+                    return View(model);
+                }
                 return RedirectToAction("Index", "Home");
             }
 
