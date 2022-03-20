@@ -16,6 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `friends`
+--
+
+DROP TABLE IF EXISTS `friends`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `friends` (
+  `UserUID` bigint NOT NULL DEFAULT '0',
+  `FriendUID` bigint NOT NULL DEFAULT '0',
+  `CreateDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`UserUID`,`FriendUID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `friends`
+--
+
+LOCK TABLES `friends` WRITE;
+/*!40000 ALTER TABLE `friends` DISABLE KEYS */;
+INSERT INTO `friends` VALUES (1,3,'0000-00-00 00:00:00');
+/*!40000 ALTER TABLE `friends` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `userinfo`
 --
 
@@ -44,6 +69,78 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'userdb'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `spAddFriend` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spAddFriend`(
+	IN P_UserUID BIGINT,
+    IN P_FriendUID BIGINT,
+    
+    OUT RetVal INT
+)
+proc_body:
+BEGIN
+	DECLARE dbErr int default 0;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION  SET dbErr = -1;
+
+	IF EXISTS (SELECT 1 FROM UserInfo WHERE UniqueID = P_UserUID )
+    THEN SET RetVal = 10;
+    LEAVE proc_body;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM UserInfo WHERE UniqueID = P_FriendUID )
+    THEN SET RetVal = 11;
+    LEAVE proc_body;
+    END IF;
+    
+    START TRANSACTION;
+	INSERT INTO Friends (UserUID, FriendUID, CreateDate)
+	values (P_UserUID, P_FriendUID, NOW());
+        
+	IF dbErr < 0 THEN
+		ROLLBACK;
+	ELSE
+		COMMIT;
+	END IF;
+    
+    SET RetVal = 0;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `spGetFriendsAll` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spGetFriendsAll`(
+	IN P_UserUID BIGINT
+    
+)
+proc_body:
+BEGIN
+	SELECT A.FriendUID, B.UserName FROM Friends AS A INNER JOIN UserInfo AS B 
+    ON A.FriendUID = B.UniqueID WHERE A.UserUID = P_UserUID;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `spUserRegistration` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -103,4 +200,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-20 16:37:09
+-- Dump completed on 2022-03-20 12:44:20

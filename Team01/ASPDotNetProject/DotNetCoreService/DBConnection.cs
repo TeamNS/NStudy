@@ -100,5 +100,93 @@ namespace DotNetCoreService
 
             return retVal;
         }
+
+        public List<Friend> GetFriendsListAll(Int64 userUID)
+        {
+            var FriendsList = new List<Friend>();
+            using (MySqlConnection con = GetConnection())
+            {
+                try
+                {
+                    con.Open();
+                    var cmd = new MySqlCommand();
+                    cmd.Connection = con;
+
+                    cmd.CommandText = "spGetFriendsAll";
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("P_UserUID", userUID);
+                    cmd.Parameters["P_UserUID"].Direction = System.Data.ParameterDirection.Input;
+
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            FriendsList.Add(new Friend()
+                            {
+                                UserUID = Convert.ToInt64(reader["UniqueID"]),
+                                UserName = reader["UserName"].ToString()
+                            });
+                        }
+                    }
+
+                }
+                catch (MySql.Data.MySqlClient.MySqlException e)
+                {
+                    Console.WriteLine("DB Connection Fail");
+                    Console.WriteLine(e.ToString());
+                }
+                con.Close();
+            }
+
+            return FriendsList;
+        }
+
+        public Int32 AddFriends(Int64 userUID, Int64 FriendUID)
+        {
+            Int32 retVal = 0;
+            using (MySqlConnection con = GetConnection())
+            {
+                try
+                {
+                    con.Open();
+                    var cmd = new MySqlCommand();
+                    cmd.Connection = con;
+
+                    cmd.CommandText = "spAddFriend";
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("P_UserUID", userUID);
+                    cmd.Parameters["P_UserUID"].Direction = System.Data.ParameterDirection.Input;
+
+                    cmd.Parameters.AddWithValue("P_FriendUID", FriendUID);
+                    cmd.Parameters["P_FriendUID"].Direction = System.Data.ParameterDirection.Input;
+
+                    cmd.Parameters.AddWithValue("RetVal", retVal);
+                    cmd.Parameters["RetVal"].Direction = System.Data.ParameterDirection.Output;
+
+                    if (cmd.ExecuteNonQuery() == 1)
+                    {
+                        Console.WriteLine("Proc Suc");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Proc Fail");
+                        Console.WriteLine("retVal: " + cmd.Parameters["RetVal"].Value);
+                        retVal = Convert.ToInt32(cmd.Parameters["RetVal"].Value);
+                    }
+
+                }
+                catch (MySql.Data.MySqlClient.MySqlException e)
+                {
+                    Console.WriteLine("DB Connection Fail");
+                    Console.WriteLine(e.ToString());
+                }
+                con.Close();
+            }
+
+            return retVal;
+        }
     }
 }

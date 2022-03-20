@@ -23,4 +23,12 @@ namespace DotNetCoreService.Models
         [Required(ErrorMessage = "이름을 입력하세요.")]
         public string UserName { get; set; }
     }
+
+    public class Friend
+    {
+        [Key]
+        public Int64 UserUID { get; set; }
+
+        public string UserName { get; set; }
+    }
 }
