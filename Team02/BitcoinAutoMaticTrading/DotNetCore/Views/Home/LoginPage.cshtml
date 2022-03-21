@@ -1,0 +1,28 @@
+﻿@*@model List<AccountInformation>*@
+
+@{
+    ViewData["Title"] = "LoginPage";
+}
+
+
+<form id = "newForm" method="Post" action="@Url.Action("Login", "HomeController")">
+    <div>
+        <label>ID:</label>
+        <input ID = ID name="ID"/>
+    </div>
+    <div>
+        <label>PW:</label>
+        <input PW= PW name="PW"/>
+    </div>
+    <div>
+        <label>AccessKey:</label>
+        <input AccessKey= AccessKey name="AccessKey"/>
+    </div>
+    <div>
+        <label>SecretKey:</label>
+        <input SecretKey= SecretKey name="SecretKey"/>
+    </div>
+
+    <button name="button" asp-action="Login">Login</button>
+    <button name="button" asp-action="SignUp">SignUp</button>
+</form>

@@ -1,0 +1,27 @@
+﻿@model List<PossessionCoinInfo>
+
+@*<h1>@ViewData["Title"]</h1>*@
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>영문명</th>
+            <th>보유량</th>
+            <th>묶인 금액</th>
+            <th>구매가</th>
+            <th>기준 화폐</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.currency</td>
+            <td>@item.balance</td>
+            <td>@item.locked</td>
+            <td>@item.avg_buy_price</td>
+            <td>@item.unit_currency</td>
+        </tr>
+        }
+    </tbody>
+</table>

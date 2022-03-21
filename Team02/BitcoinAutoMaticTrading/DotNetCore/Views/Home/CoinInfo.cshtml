@@ -1,0 +1,28 @@
+﻿@model Dictionary<String, List<CandleMinute>>
+@{
+    ViewData["Title"] = "CoinInfo";
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>한글명</th>
+            <th>가격</th>
+            <th>거래량</th>
+            @*<th>AccessKey</th>
+                <th>SecretKey</th>*@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Key</td>
+                <td>@item.Value[0].trade_price</td>
+                <td>@item.Value[0].candle_acc_trade_volume</td>
+                @*<td>@item.AccessKey</td>
+                    <td>@item.SecretKey</td>*@
+            </tr>
+        }
+    </tbody>
+</table>
