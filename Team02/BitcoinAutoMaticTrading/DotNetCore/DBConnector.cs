@@ -11,6 +11,7 @@ namespace DotNetCore
     {
         public bool AccountLogin(string ID, string PW, string AccessKey, string SecretKey)
         {
+            bool bRet = false;
             string OutAccessKey = "";
             string OutSecretKey = "";
 
@@ -31,25 +32,33 @@ namespace DotNetCore
                     cmd.Parameters["_OutSecretKey"].Direction = ParameterDirection.Output;
 
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.ExecuteNonQuery();
 
-                    OutAccessKey = (string)cmd.Parameters["_OutAccessKey"].Value;
-                    OutSecretKey = (string)cmd.Parameters["_OutSecretKey"].Value;
+                    if (cmd.ExecuteNonQuery() == 1)
+                    {
+                        OutAccessKey = (string)cmd.Parameters["_OutAccessKey"].Value;
+                        OutSecretKey = (string)cmd.Parameters["_OutSecretKey"].Value;
+
+                        UpbitAPI.AddAccount(OutAccessKey, OutSecretKey);
+
+                        bRet = true;
+                    }
+                    else
+                    {
+                        bRet = false;
+                    }
 
                 }
-
                 con.Close();
                 con.Dispose();
             }
 
-            if (OutAccessKey == AccessKey)
-                return true;
-
-            return false;
+            return bRet;
         }
 
         public bool AccountSignUp(string ID, string PW, string AccessKey, string SecretKey)
         {
+            bool bRet = false;
+
             using (MySqlConnection con = new MySqlConnection("server=localhost;user=root;database=dotnetcore;port=3306;password=DataBase;"))
             {
                 con.Open();
@@ -62,6 +71,15 @@ namespace DotNetCore
 
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.ExecuteNonQuery();
+
+                    if (cmd.ExecuteNonQuery() == 1)
+                    {
+                        bRet = true;
+                    }
+                    else
+                    {
+                        bRet = false;
+                    }
                 }
 
                 con.Close();
@@ -70,7 +88,7 @@ namespace DotNetCore
 
             // AccessKey, SecretKey가 유효한 값인지는 어떻게 해야할지..?
 
-            return true;
+            return bRet;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace DotNetCore
 {
     public class PossessionCoinInfo : IDisposable
     {
-       public string currency;
+        public string currency;
         public double balance;
         public double locked;
         public double avg_buy_price;

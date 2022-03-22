@@ -13,51 +13,61 @@ using System.Threading;
 
 namespace DotNetCore
 {
-    public class UpbitAPI
+    public static class UpbitAPI
     {
         const int INPUT_COUNT = 5;
 
-        private Account m_showAccount = null;
+        private static Account m_CoinDataAccount = null;
 
-        private Dictionary<string, Account> m_DicAccounts = new Dictionary<string, Account>();
+        private static Dictionary<string, Account> m_DicAccounts = new Dictionary<string, Account>();
+        private static Dictionary<String, String> m_AccountKey { get; set; } = new Dictionary<string, string>(); // AccessKey, SecretKey 넣을 자료구조 추후에는 입력으로 넣어지도록
 
-        private List<MarketInfo> m_ListMarketInfo;
+        private static List<MarketInfo> m_ListMarketInfo;
 
-        public List<CandleMinute> m_ListCandleMinutes { get; set; } = new List<CandleMinute>();
-        public Dictionary<String, List<CandleMinute>> m_DicCoinCandleMinutes { get; set; } = new Dictionary<String, List<CandleMinute>>();
-        public Dictionary<String, List<CandleMinute>> m_DicPrevCoinCandleMinutes { get; set; } = new Dictionary<String, List<CandleMinute>>();
+        public static List<CandleMinute> m_ListCandleMinutes { get; set; } = new List<CandleMinute>();
+        public static Dictionary<String, List<CandleMinute>> m_DicCoinCandleMinutes { get; set; } = new Dictionary<String, List<CandleMinute>>();
+        public static Dictionary<String, List<CandleMinute>> m_DicPrevCoinCandleMinutes { get; set; } = new Dictionary<String, List<CandleMinute>>();
 
 
-        public UpbitAPI()
+        public static void AddAccount(string AccessKey, string SecretKey)
         {
-        }
-
-        public void AddAccount(string AccessKey, string SecretKey)
-        {
-            // 존재하는 계정인지 확인해야 함.
-
             Account newAccount = new Account(AccessKey, SecretKey);
-            m_DicAccounts.Add(AccessKey, newAccount);
-
-            if (m_showAccount == null)
+            if(!m_DicAccounts.ContainsKey(AccessKey))
             {
-                m_showAccount = new Account(AccessKey, SecretKey);
+                m_DicAccounts.Add(AccessKey, newAccount);
+            }
+
+            if (m_CoinDataAccount == null)
+            {
+                m_CoinDataAccount = new Account(AccessKey, SecretKey);
             }
         }
 
-        public Account GetAccount(string key)
+        public static Account GetAccount(string key)
         {
-            if (m_DicAccounts.ContainsKey(key))
+            if (key == null)
+                return null;
+
+            if (m_DicAccounts.ContainsKey(key) == false)
+                return null;
+
+           Account myAccount;
+           bool hasValue = m_DicAccounts.TryGetValue(key, out myAccount);
+
+           return myAccount;
+        }
+
+        public static Account GetCoinDataAccount()
+        {
+            if(m_CoinDataAccount != null)
             {
-                Account value;
-                bool hasValue = m_DicAccounts.TryGetValue(key, out value);
-                return value;
-            }
+                return m_CoinDataAccount;
+            }    
 
             return null;
         }
 
-        public void SetAccountPossessionInfo(string key)
+        public static void SetAccountPossessionInfo(string key)
         {
             if (m_DicAccounts.ContainsKey(key))
             {
@@ -65,17 +75,17 @@ namespace DotNetCore
             }
         }
 
-        public Dictionary<string, Account> GetAccountAll()
+        public static Dictionary<string, Account> GetAccountAll()
         {
             return m_DicAccounts;
         }
 
-        public void SetMarketInfo(List<MarketInfo> ListMarketInfo)
+        public static void SetMarketInfo(List<MarketInfo> ListMarketInfo)
         {
             m_ListMarketInfo = ListMarketInfo;
         }
 
-        public void UpdateCoinInfo(UpbitAPI api)
+        public static void UpdateCoinInfo()
         {
             for (int i = 0; i < m_ListMarketInfo.Count; ++i)
             {
@@ -85,17 +95,15 @@ namespace DotNetCore
                 if (!Str.Equals("KRW-ICX") && !Str.Equals("KRW-REP") && !Str.Equals("KRW-WAVES") && !Str.Equals("KRW-SRM") && !Str.Equals("KRW-ETC"))
                     continue;
 
-                //if (Str.Substring(0, 3) != "KRW") // 원화 마켓에 있는 데이터만 긁어옴
-                //    continue;
+                List<CandleMinute> ListCandleMinute = UpbitAPI.GetCandleMinutes(m_CoinDataAccount.GetParam(), m_ListMarketInfo[i].market, UpbitAPI.MinuteUnit._1, DateTime.Now, 1);
 
-                //if (m_DicCoinCandleMinutes.Count >= INPUT_COUNT)
-                //    break;
-
-
-                m_DicCoinCandleMinutes.Add(m_ListMarketInfo[i].market, api.GetCandleMinutes(m_showAccount.GetParam(), m_ListMarketInfo[i].market, UpbitAPI.MinuteUnit._1, DateTime.Now, 1));
+                if (m_DicCoinCandleMinutes.ContainsKey(m_ListMarketInfo[i].market) == true)
+                    m_DicCoinCandleMinutes[m_ListMarketInfo[i].market] = ListCandleMinute;
+                else
+                    m_DicCoinCandleMinutes.Add(m_ListMarketInfo[i].market, ListCandleMinute);            
             }
         }
-        public void print(List<PossessionCoinInfo> ListAccount)
+        public static void print(List<PossessionCoinInfo> ListAccount)
         {
             for (int i = 0; i < ListAccount.Count; ++i) // 해당 계좌가 가지고 있는 코인 정보
                 Console.WriteLine(ListAccount[i].currency + " | " + ListAccount[i].avg_buy_price + " | " + ListAccount[i].unit_currency);
@@ -109,19 +117,19 @@ namespace DotNetCore
 
             Console.WriteLine();
         }
-        public List<PossessionCoinInfo> GetAccount(NoParam noParam)
+        public static List<PossessionCoinInfo> GetAccount(NoParam noParam)
         {
             var data = noParam.Get("/v1/accounts", RestSharp.Method.Get);
             return JsonConvert.DeserializeObject<List<PossessionCoinInfo>>(data);
         }
 
-        public List<MarketInfo> GetMarketInfo(NoParam noParam)
+        public static List<MarketInfo> GetMarketInfo(NoParam noParam)
         {
             var data = noParam.Get("/v1/market/all", RestSharp.Method.Get);
             return JsonConvert.DeserializeObject<List<MarketInfo>>(data);
         }
 
-        public List<CandleMinute> GetCandleMinutes(Param Param, string market, MinuteUnit unit, DateTime to = default(DateTime), int count = 1)
+        public static List<CandleMinute> GetCandleMinutes(Param Param, string market, MinuteUnit unit, DateTime to = default(DateTime), int count = 1)
         {
             // 시세 캔들 조회 - 분(Minute) 캔들
             Dictionary<string, string> parameters = new Dictionary<string, string>();
@@ -132,7 +140,7 @@ namespace DotNetCore
             return JsonConvert.DeserializeObject<List<CandleMinute>>(data);
         }
 
-        public RequestOrderInfo RequestOrderLimit(Param Param, string market, double volume, double price) // 지정가 매수 / 매도
+        public static RequestOrderInfo RequestOrderLimit(Param Param, string market, double volume, double price) // 지정가 매수 / 매도
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             parameters.Add("market", market);
@@ -144,7 +152,7 @@ namespace DotNetCore
             var data = Param.Get("/v1/orders", parameters, RestSharp.Method.Post);
             return JsonConvert.DeserializeObject<RequestOrderInfo>(data);
         }
-        public RequestOrderInfo RequestOrderMarketBuy(Param Param, string market, double volume, double price) // 시장가 매수 
+        public static RequestOrderInfo RequestOrderMarketBuy(Param Param, string market, double volume, double price) // 시장가 매수 
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             parameters.Add("market", market);
@@ -156,7 +164,7 @@ namespace DotNetCore
             var data = Param.Get("/v1/orders", parameters, RestSharp.Method.Post);
             return JsonConvert.DeserializeObject<RequestOrderInfo>(data);
         }
-        public RequestOrderInfo MakeOrderMarketSell(Param Param, string market, double volume, double price) // 시장가 매도
+        public static RequestOrderInfo MakeOrderMarketSell(Param Param, string market, double volume, double price) // 시장가 매도
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             parameters.Add("market", market);

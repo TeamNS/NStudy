@@ -16,12 +16,12 @@ namespace DotNetCore.Controllers
         public IActionResult Possession() // 인자로 Account 객체가 오도록 해야 함. 
         {
             //List<Account> ListAccount = new List<Account>();
-            //string AccessKey = "";
+            //string AccessKey = "iyXWNzCSkTu2lX4DPYq6px7ARxG7qdH6eIV6jByG";
 
             //if (!m_AccountKey.ContainsKey(AccessKey))
             //{
-            //    m_AccountKey.Add(AccessKey, "");
-            //    m_UpbitAPI.AddAccount(AccessKey, "");
+            //    m_AccountKey.Add(AccessKey, "ZFN8Xrmx5zLHQBXtAwsk9IXwqArLkVXVLzbyYgJb");
+            //    m_UpbitAPI.AddAccount(AccessKey, "ZFN8Xrmx5zLHQBXtAwsk9IXwqArLkVXVLzbyYgJb");
             //}
 
             //Account myAccount = m_UpbitAPI.GetAccount(AccessKey);
