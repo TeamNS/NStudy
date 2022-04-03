@@ -23,6 +23,7 @@ namespace DotNetCoreService.Controllers
             var context = HttpContext.RequestServices.GetService(typeof(DBConnection)) as DBConnection;
             List<User> list = context.GetUserDataAll();
 
+
             return View(list);
         }
 

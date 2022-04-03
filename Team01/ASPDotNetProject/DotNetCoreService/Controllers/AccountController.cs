@@ -19,11 +19,13 @@ namespace DotNetCoreService.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public IActionResult Login()
-        //{
+        [HttpPost]
+        public IActionResult Login(User user)
+        {
+            return View(JwtManager.GenerateToken(user.UserName));
 
-        //}
+
+        }
 
 
         /// <summary>
