@@ -47,5 +47,63 @@ namespace DotNetCoreService.Models
             // 토큰 객체를 직렬화하여 반환.
             return handler.WriteToken(token);
         }
+
+        private static ClaimsPrincipal GetPrincipal(string token)
+        {
+            try
+            {
+                JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+
+                JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(token);
+
+                if (jwtToken == null)
+                    return null;
+
+                byte[] secretArray = Convert.FromBase64String(baseSecret);
+
+                TokenValidationParameters parameters = new TokenValidationParameters()
+                {
+                    RequireExpirationTime = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(secretArray)
+                };
+
+                SecurityToken securityToken;
+
+                ClaimsPrincipal principal = tokenHandler.ValidateToken(token, parameters, out securityToken);
+
+                return principal;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+        }
+
+        public static string ValidateToken(string token)
+        {
+            ClaimsPrincipal entity = GetPrincipal(token);
+
+            if (entity == null) return null;
+
+            ClaimsIdentity identity;
+
+            try
+            {
+                identity = (ClaimsIdentity)entity.Identity;
+            }
+            catch (NullReferenceException)
+            {
+                return null;
+            }
+
+            // Claim nameClaim = entity.FindFirst(ClaimTypes.Name); 도 동일한 효과
+            Claim nameClaim = identity.FindFirst(ClaimTypes.Name);
+
+            return nameClaim.Value;
+
+        }
     }
 }
